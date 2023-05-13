@@ -1,4 +1,4 @@
-![]("C:\Users\sebas\OneDrive\Documentos\GitHub\IS_actividad_3\logo_uninorte.png")
+![]("logo_uninorte.png")
 ## INFORMACIÓN DEL ESTUDIANTE
 **Nombre:** Sebastián De Jesús Santos Vergara
 
@@ -189,3 +189,4 @@ INNER JOIN `is_act3.clientes` clientes ON cliente = Numero
 WHERE cantidad_productos = 10
 ORDER BY cliente
 ```
+entonces lo que hace la consulta es que usa las subconsultas `productos_por_cliente` para agrupar cada compra por el cliente y el producto contando así cuantas veces se compró el producto, Y `cantidad_productos_cliente` para contar la cantidad de productos diferentes que compró. Todo esto para despues solo tomar los clientes que compraron cierta cantidad de productos disponibles. 
