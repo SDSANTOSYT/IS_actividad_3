@@ -4,7 +4,7 @@
 **NRC:**  4519
 
 ### PREGUNTAS
-#### _1.	¿Cuál es el producto más vendido en una ubicación geográfica específica?_
+### _1.	¿Cuál es el producto más vendido en una ubicación geográfica específica?_
 
 
 Para este caso se tomó como ubicación geográfica a la ciudad de nacimiento, especificamente la ciudad de barranquilla. Para responder esta pregunta se realizó la siguiente consulta en SQL:
@@ -34,7 +34,7 @@ la primera llamada  `clientes_barranquilla` donde se toman los datos que necesit
 
 con las subconsultas ya hechas finalmente se hace una consulta donde se agrupan los datos por el `producto`, `codigo` y se hace un `COUNT` para obtener el numero de compras de cada producto. Eso nos devolverá una tabla con todos los productos con su nombre, su codigo ordenados desde mayor numero de compras a menor y el primero de la lista será el mas vendido.
 
-#### _2.	¿Cuántos clientes han comprado productos de un rango de precios específico?_
+### _2.	¿Cuántos clientes han comprado productos de un rango de precios específico?_
 
 Aquí usaremos un rango de precios entre $1.500 a $7.500
 
@@ -90,7 +90,7 @@ GROUP BY Numero, Nombre_1, Nombre_2, Apellidos
 aqui simplemente se reemplaza la consulta donde se cuentan los clientes con un `INNER JOIN` entre las subconsultas y la tabla de `clientes` para obtener la información de los clientes que realizaron las compras.
 
 
-#### _3.	¿Cuáles son los clientes más frecuentes en realizar compras y cuánto han gastado en total?_
+### _3.	¿Cuáles son los clientes más frecuentes en realizar compras y cuánto han gastado en total?_
 
 para responder a esta usamos la siguiente consulta:
 
@@ -109,6 +109,39 @@ ORDER BY Compras DESC
 
 aqui simplemente usamos una subconsulta `compras` para obtener el precio de los productos comprados para luego realizar una consulta tomando los datos de los clientes y agrupando los datos por estos haciendo un `COUNT` al numero de compras y un `SUM` a los precios de las compras y con eso obtengo la cantidad de compras que han realizado y cuanto han gastado. Solo queda ordenar de mayor cantidad de compras a menor y tomar los primeros n clientes mas frecuentes.
 
-#### _4.	¿Cuál es el producto más vendido en cada ubicación geográfica?_
+### _4.	¿Cuál es el producto más vendido en cada ubicación geográfica?_
+en esta pregunta por conveniencia tomamos a ubicación geografica como departamento y realizamos la siguiente consulta:
 
-en esta pregunta por conveniencia tomamos a ubicación geografica como departamento 
+```sql
+WITH prod_ciudades AS (
+SELECT Departamento, producto, COUNT(producto) AS cantidad_compras
+FROM `is_act3.clientes`
+INNER JOIN `is_act3.compras` ON Numero = cliente
+GROUP BY Departamento, producto
+ORDER BY Departamento, cantidad_compras DESC
+), 
+s AS(
+SELECT Departamento, MAX(cantidad_compras) AS prod_popular
+FROM prod_ciudades
+GROUP BY Departamento
+),
+codigos_productos_populares AS (
+SELECT s.Departamento, producto AS cod_prod, cantidad_compras
+FROM prod_ciudades
+INNER JOIN s ON (s.prod_popular = prod_ciudades.cantidad_compras AND s.Departamento = prod_ciudades.Departamento)
+)
+
+SELECT Departamento, cod_prod, Producto, cantidad_compras
+FROM codigos_productos_populares
+INNER JOIN `is_act3.productos` ON codigos_productos_populares.cod_prod = Codigo
+ORDER BY Departamento
+
+```
+
+De forma resumida usamos 3 subconsultas:
+
+La subconsulta `prod_ciudades` para obtener una lista de las compras de cada producto en cada departamento; La subconsulta `s` nos entrega el producto con mas compras en cada departamento sin decirnos cual producto es y la subconsulta `codigos_productos_populares` nos entrega lo que teniamos en `s` pero con los codigos de los productos.
+
+Para finalizar con una consulta general donde obtenemos el nombre de los productos mas populares con su codigo en cada departamento.
+
+### _5.	¿Cuáles son los clientes que han comprado todos los productos disponibles?_
