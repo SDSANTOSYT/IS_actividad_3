@@ -9,7 +9,7 @@
 
 Para este caso se tomó como ubicación geográfica a la ciudad de nacimiento, especificamente la ciudad de barranquilla. Para responder esta pregunta se realizó la siguiente consulta en SQL:
 
-```
+```js
 WITH clientes_barranquilla AS (
 SELECT Numero, Nombre_1, Nombre_2, Apellidos, Ciudad_de_Nacimiento
 FROM `int-is.is_act3.clientes` 
