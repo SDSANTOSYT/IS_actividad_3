@@ -9,7 +9,7 @@
 
 Para este caso se tomó como ubicación geográfica a la ciudad de nacimiento, especificamente la ciudad de barranquilla. Para responder esta pregunta se realizó la siguiente consulta en SQL:
 
-```SQL
+```
 WITH clientes_barranquilla AS (
 SELECT Numero, Nombre_1, Nombre_2, Apellidos, Ciudad_de_Nacimiento
 FROM `int-is.is_act3.clientes` 
@@ -28,8 +28,10 @@ GROUP BY Producto, prod.Codigo
 ORDER BY numero_compras DESC
 ```
 
-como se puede apreciar se usaron 2 subconsultas; 
+como se puede apreciar se usaron 2 subconsultas:
 
 la primera llamada  `clientes_barranquilla` donde se toman los datos que necesitamos de los clientes de la tabla del mismo nombre para filtrar a los que tienen a barranquilla como su ciudad de nacimiento, y la segunda llamada `compras_barranquilla` donde se hace un `INNER JOIN` con la tabla de `compras` para obtener las compras realizadas por los clientes en barranquilla.
 
-con las subconsultas ya hechas finalmente se hace una consulta donde se agrupan los datos por el producto
+con las subconsultas ya hechas finalmente se hace una consulta donde se agrupan los datos por el `producto`, `codigo` y se hace un `COUNT` para obtener el numero de compras de cada producto. Eso nos devolverá una tabla con todos los productos con su nombre, su codigo ordenados desde mayor numero de compras a menor y el primero de la lista será el mas vendido.
+
+2.	¿Cuántos clientes han comprado productos de un rango de precios específico?
