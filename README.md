@@ -1,3 +1,4 @@
+![]("C:\Users\sebas\OneDrive\Documentos\GitHub\IS_actividad_3\logo_uninorte.png")
 ## INFORMACIÓN DEL ESTUDIANTE
 **Nombre:** Sebastián De Jesús Santos Vergara
 
@@ -33,7 +34,7 @@ como se puede apreciar se usaron 2 subconsultas:
 la primera llamada  `clientes_barranquilla` donde se toman los datos que necesitamos de los clientes de la tabla del mismo nombre para filtrar a los que tienen a barranquilla como su ciudad de nacimiento, y la segunda llamada `compras_barranquilla` donde se hace un `INNER JOIN` con la tabla de `compras` para obtener las compras realizadas por los clientes en barranquilla.
 
 con las subconsultas ya hechas finalmente se hace una consulta donde se agrupan los datos por el `producto`, `codigo` y se hace un `COUNT` para obtener el numero de compras de cada producto. Eso nos devolverá una tabla con todos los productos con su nombre, su codigo ordenados desde mayor numero de compras a menor y el primero de la lista será el mas vendido.
-
+***
 ### _2.	¿Cuántos clientes han comprado productos de un rango de precios específico?_
 
 Aquí usaremos un rango de precios entre $1.500 a $7.500
@@ -86,10 +87,8 @@ INNER JOIN compras_intervalo ON Numero = cliente
 GROUP BY Numero, Nombre_1, Nombre_2, Apellidos
 
 ```
-
 aqui simplemente se reemplaza la consulta donde se cuentan los clientes con un `INNER JOIN` entre las subconsultas y la tabla de `clientes` para obtener la información de los clientes que realizaron las compras.
-
-
+***
 ### _3.	¿Cuáles son los clientes más frecuentes en realizar compras y cuánto han gastado en total?_
 
 para responder a esta usamos la siguiente consulta:
@@ -108,7 +107,7 @@ ORDER BY Compras DESC
 ```
 
 aqui simplemente usamos una subconsulta `compras` para obtener el precio de los productos comprados para luego realizar una consulta tomando los datos de los clientes y agrupando los datos por estos haciendo un `COUNT` al numero de compras y un `SUM` a los precios de las compras y con eso obtengo la cantidad de compras que han realizado y cuanto han gastado. Solo queda ordenar de mayor cantidad de compras a menor y tomar los primeros n clientes mas frecuentes.
-
+***
 ### _4.	¿Cuál es el producto más vendido en cada ubicación geográfica?_
 en esta pregunta por conveniencia tomamos a ubicación geografica como departamento y realizamos la siguiente consulta:
 
@@ -143,5 +142,50 @@ De forma resumida usamos 3 subconsultas:
 La subconsulta `prod_ciudades` para obtener una lista de las compras de cada producto en cada departamento; La subconsulta `s` nos entrega el producto con mas compras en cada departamento sin decirnos cual producto es y la subconsulta `codigos_productos_populares` nos entrega lo que teniamos en `s` pero con los codigos de los productos.
 
 Para finalizar con una consulta general donde obtenemos el nombre de los productos mas populares con su codigo en cada departamento.
-
+***
 ### _5.	¿Cuáles son los clientes que han comprado todos los productos disponibles?_
+Inicialmente usamos la siguiente consulta para poder ver quienes compraron todos los productos disponibles, los cuales son 21, pero al hacerlo nos daremos cuenta de que ningún cliente cumple los requisitos por lo que no obtendremos ningún dato:
+
+```sql
+WITH productos_por_cliente AS (
+SELECT DISTINCT cliente, Codigo, COUNT(prod.producto) AS compras_producto
+FROM `int-is.is_act3.compras` compras
+INNER JOIN `is_act3.productos` prod ON Codigo = compras.producto
+GROUP BY cliente, Codigo
+ORDER BY cliente
+),
+cantidad_productos_cliente AS (
+SELECT cliente, COUNT(Codigo) AS cantidad_productos
+FROM productos_por_cliente
+GROUP BY cliente
+)
+
+SELECT DISTINCT cliente, Nombre_1, Apellidos, cantidad_productos
+FROM cantidad_productos_cliente 
+INNER JOIN `is_act3.clientes` clientes ON cliente = Numero
+WHERE cantidad_productos = 21
+ORDER BY cliente
+
+```
+Caso tal que aun así quisiéramos conocer quienes son los clientes con la mayor cantidad de productos disponibles comprados, que la sacamos de las dos subconsultas anteriores y en este caso es 10, solo cambiamos el 21 por un 10:
+
+```sql
+WITH productos_por_cliente AS (
+SELECT DISTINCT cliente, Codigo, COUNT(prod.producto) AS compras_producto
+FROM `int-is.is_act3.compras` compras
+INNER JOIN `is_act3.productos` prod ON Codigo = compras.producto
+GROUP BY cliente, Codigo
+ORDER BY cliente
+),
+cantidad_productos_cliente AS (
+SELECT cliente, COUNT(Codigo) AS cantidad_productos
+FROM productos_por_cliente
+GROUP BY cliente
+)
+
+SELECT DISTINCT cliente, Nombre_1, Apellidos, cantidad_productos
+FROM cantidad_productos_cliente 
+INNER JOIN `is_act3.clientes` clientes ON cliente = Numero
+WHERE cantidad_productos = 10
+ORDER BY cliente
+```
