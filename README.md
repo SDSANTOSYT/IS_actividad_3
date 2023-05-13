@@ -1,4 +1,4 @@
-![](https://upload.wikimedia.org/wikipedia/commons/f/ff/Logo_uninorte_colombia.jpg)
+![](https://upload.wikimedia.org/wikipedia/commons/3/30/Logotipo_de_la_Universidad_del_Norte.svg)
 ## INFORMACIÓN DEL ESTUDIANTE
 **Nombre:** Sebastián De Jesús Santos Vergara
 
